@@ -1,24 +1,19 @@
 package com.example.tictactoe;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import com.example.tictactoe.databinding.ActivityMainBinding;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
 
     private String currPlayer;
     private ActivityMainBinding binding;
     private Button[][] buttons;
-    private boolean gameWon;
+    private boolean gameDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         updateCurrPlayer("X");
-        gameWon = false;
+        gameDone = false;
     }
 
     private void updateCurrPlayer(String name) {
@@ -56,14 +51,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onButtonClick(View view) {
-        if (gameWon)
+        if (gameDone)
             return;
         Button button = (Button) view;
         if(button.getText().length() == 0) {
             button.setText(currPlayer);
             if(checkWin(currPlayer)) {
-                gameWon = true;
+                gameDone = true;
                 binding.textView.setText("Player " + currPlayer + " Wins!");
+                return;
+            }
+
+            if(checkTie()) {
+                gameDone = true;
+                binding.textView.setText("It's a tie!");
                 return;
             }
 
@@ -109,5 +110,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    private boolean checkTie() {
+        for (Button[] row : buttons){
+            for (Button button : row){
+                if (button.getText().length() == 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
